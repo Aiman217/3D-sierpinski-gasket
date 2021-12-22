@@ -1,0 +1,112 @@
+<!--CPC354/CMT324 ASSIGNMENT 1-->
+<!--Group member:-->
+<!--1. Muhammad Aiman Arif Bin Baharudin (146824)-->
+<!--2. Xian Zhi Rong (140646)-->
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>CPC354/CMT324 Assignment 1</title>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 vPosition;
+    attribute vec4 vColor;
+    varying vec4 fColor;
+    uniform vec3 theta;
+    uniform float scale;
+    uniform vec2 trans;
+
+    void main() {
+        vec3 angles = radians(theta);
+        vec3 c = cos(angles);
+        vec3 s = sin(angles);
+
+        mat4 rx = mat4(1.0, 0.0, 0.0, 0.0,
+                       0.0, c.x, s.x, 0.0,
+                       0.0, -s.x, c.x, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+
+        mat4 ry = mat4(c.y, 0.0, -s.y, 0.0,
+                       0.0, 1.0, 0.0, 0.0,
+                       s.y, 0.0, c.y, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+
+        mat4 rz = mat4(c.z, s.z, 0.0, 0.0,
+                       -s.z, c.z, 0.0, 0.0,
+                       0.0, 0.0, 1.0, 0.0,
+                       0.0, 0.0, 0.0, 1.0);
+        
+        mat4 rotationMat = rz * ry * rx;
+
+        mat4 scalingMat = mat4(scale, 0.0, 0.0, 0.0,
+                               0.0, scale, 0.0, 0.0,
+                               0.0, 0.0, scale, 0.0,
+                               0.0, 0.0, 0.0, 1.0);
+
+        mat4 transMat = mat4(1.0, 0.0, 0.0, 0.0,
+                             0.0, 1.0, 0.0, 0.0,
+                             0.0, 0.0, 1.0, 0.0,
+                             trans[0], trans[1], 0.0, 1.0);
+
+        gl_Position = transMat * scalingMat * rotationMat * vPosition;
+        fColor = vColor;
+    }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 fColor;
+
+    void main() {
+        gl_FragColor = fColor;
+    }
+    </script>
+    <script type="text/javascript" src="Common/initShaders.js"></script>
+    <script type="text/javascript" src="Common/MV.js"></script>
+    <script type="text/javascript" src="146824_140646_assignment1.js"></script>
+</head>
+
+<!--Declaration of canvas, colour menu, buttons and slider settings-->
+<body>
+    <h1 style="color:black;text-align:center;">CPC354/CMT324 Assignment 1 - Implementation of 3D Sierpinski Gasket</h1>
+    <p style="color: black;text-align: center;"><b>Created by Xian Zhi Rong and Muhammad Aiman Arif Bin Baharudin</b></p>
+    <div style="text-align: center;">
+        <canvas id="gl-canvas" width="400" height="400">
+            HTML5 is not supported by your browser!
+        </canvas>
+        <div id="menu">
+            <p><b>INPUT</b></p>
+            <div>
+                <label for="color1" class="colorlabel">Color Left</label>
+                <input type="color" id="color1" class="colorpicker" name="color1" value="#FF0000">
+                &nbsp
+                <label for="color2" class="colorlabel">Color Bottom</label>
+                <input type="color" id="color2" class="colorpicker" name="color2" value="#FFFF00">
+                &nbsp
+                <label for="color3" class="colorlabel">Color Right</label>
+                <input type="color" id="color3" class="colorpicker" name="color3" value="#0000FF">
+                <br>
+            </div>
+            <div>
+                <label for="division">Number of Subdivisions</label>
+                <input type="range" id="division" class="slider settings" name="division" min="0" max="5" step="1"
+                    value="0">
+                <input type="text" class="textbox" name="division" value="0" style="width: 1.5vw; text-align: center;" readonly><br>
+                <label for="speed">Speed (%)</label>
+                <input type="range" id="speed" class="slider settings" name="speed" min="100" max="500" step="100"
+                    value="200">
+                <input type="text" class="textbox" name="speed" value="200" style="width: 1.5vw; text-align: center;"  readonly><br>
+                <label for="scaleFac">Scaling Factor</label>
+                <input type="range" id="scaleFac" class="slider settings" name="scaleFac" min="1" max="3" step="0.5"
+                    value="1">
+                <input type="text" class="textbox" name="scaleFac" value="1" style="width: 1.5vw; text-align: center;"  readonly><br>
+            </div>
+            <br>
+            <input type="button" id="start-button" value="Start">
+            <input type="button" id="restart-button" value="Restart">
+        </div>
+    </div>
+</body>
+
+</html>
