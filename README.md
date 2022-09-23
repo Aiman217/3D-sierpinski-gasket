@@ -1,1 +1,0 @@
-# Implementation-of-3D-Sierpinski-Gasket-using-WebGL
